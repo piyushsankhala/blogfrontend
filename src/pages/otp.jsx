@@ -23,6 +23,7 @@ export default function Otp() {
       });
 
       const verifyData = await verifyRes.json();
+      console.log(verifyData)
 
       if (!verifyRes.ok) {
         return alert("❌ " + verifyData.message);

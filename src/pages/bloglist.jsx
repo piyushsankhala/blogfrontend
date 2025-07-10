@@ -8,17 +8,18 @@ export default function BlogList() {
 
   const fetchAllBlogs = async () => {
     try {
-      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/getallblogs", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/blog/getallblogs",
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ Sort by newest first
-        
         setBloglist(data.blogs);
       } else {
         console.error("Fetch error:", data.message);
@@ -28,22 +29,19 @@ export default function BlogList() {
     }
   };
 
-  useEffect(() => {
-    fetchAllBlogs();
-    const interval = setInterval(fetchAllBlogs, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
   const togglelikes = async (blogid) => {
     try {
-      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/togglelike", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ blogid }),
-      });
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/blog/togglelike",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ blogid }),
+        }
+      );
 
       const data = await res.json();
 
@@ -57,17 +55,51 @@ export default function BlogList() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(
+        "https://blogbackend-3-l6mp.onrender.com/api/user/logout",
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        navigate("/login");
+      } else {
+        const data = await res.json();
+        console.error("Logout failed:", data.message);
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllBlogs();
+    const interval = setInterval(fetchAllBlogs, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 py-6 px-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 max-w-3xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 max-w-3xl mx-auto gap-2">
         <h1 className="text-3xl font-bold text-gray-800">Explore Blogs</h1>
-        <button
-          onClick={() => navigate("/profile")}
-          className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition text-sm"
-        >
-          My Profile
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate("/profile")}
+            className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition text-sm"
+          >
+            My Profile
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition text-sm"
+          >
+            🚪 Logout
+          </button>
+        </div>
       </div>
 
       {/* Blog List */}

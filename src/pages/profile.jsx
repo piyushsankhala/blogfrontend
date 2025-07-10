@@ -9,13 +9,16 @@ export default function Profile() {
 
   const getBlogsOfExistingUser = async () => {
     try {
-      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/getblogofexistinguser", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/blog/getblogofexistinguser",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
       if (res.ok) {
@@ -31,6 +34,26 @@ export default function Profile() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(
+        "https://blogbackend-3-l6mp.onrender.com/api/user/logout",
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        navigate("/login");
+      } else {
+        const data = await res.json();
+        console.error("Logout failed:", data.message);
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
+
   useEffect(() => {
     getBlogsOfExistingUser();
   }, []);
@@ -38,7 +61,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-100 py-6 px-4 max-w-3xl mx-auto">
       {/* 📌 Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
           <img
             src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "U"}`}
@@ -50,12 +73,26 @@ export default function Profile() {
           </h1>
         </div>
 
-        <button
-          onClick={() => navigate("/upload")}
-          className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
-        >
-          ➕ Create Post
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => navigate("/upload")}
+            className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
+          >
+            ➕ Create Post
+          </button>
+          <button
+            onClick={() => navigate("/bloglist")}
+            className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition"
+          >
+            📄 View All Blogs
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition"
+          >
+            🚪 Logout
+          </button>
+        </div>
       </div>
 
       {/* 📝 Blog List */}
