@@ -9,7 +9,7 @@ export default function Register() {
 
  const sendotp = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:5000/api/otp/send", {
+    const res = await fetch("https://blogbackend-3-l6mp.onrender.com/api/otp/send", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

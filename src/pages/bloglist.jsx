@@ -8,7 +8,7 @@ export default function BlogList() {
 
   const fetchAllBlogs = async () => {
     try {
-      const res = await fetchWithRefresh("http://localhost:5000/api/blog/getallblogs", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/getallblogs", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -38,7 +38,7 @@ export default function BlogList() {
 
   const togglelikes = async (blogid) => {
     try {
-      const res = await fetchWithRefresh("http://localhost:5000/api/blog/togglelike", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/togglelike", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

@@ -16,7 +16,7 @@ export default function App() {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const res = await fetchWithRefresh("http://localhost:5000/api/user/currentuser", {
+        const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/currentuser", {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",

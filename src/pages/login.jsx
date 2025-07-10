@@ -8,7 +8,7 @@ export default function Login({ setUser }) {
 
   const login = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/user/login", {
+      const res = await fetch("https://blogbackend-3-l6mp.onrender.com/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

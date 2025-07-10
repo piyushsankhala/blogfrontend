@@ -9,7 +9,7 @@ export default function Profile() {
 
   const getBlogsOfExistingUser = async () => {
     try {
-      const res = await fetchWithRefresh("http://localhost:5000/api/blog/getblogofexistinguser", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/getblogofexistinguser", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

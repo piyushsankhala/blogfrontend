@@ -15,7 +15,7 @@ export default function Otp() {
 
     try {
       // Step 1: Verify OTP
-      const verifyRes = await fetch("http://localhost:5000/api/otp/verify", {
+      const verifyRes = await fetch("https://blogbackend-3-l6mp.onrender.com/api/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -29,7 +29,7 @@ export default function Otp() {
       }
 
       // Step 2: Register user
-      const regRes = await fetch("http://localhost:5000/api/user/register", {
+      const regRes = await fetch("https://blogbackend-3-l6mp.onrender.com/api/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

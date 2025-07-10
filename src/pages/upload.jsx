@@ -15,7 +15,7 @@ export default function UploadPost() {
     if (image) formData.append("image", image);
 
     try {
-      const res = await fetchWithRefresh("http://localhost:5000/api/blog/upload", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/upload", {
         method: "POST",
         body: formData,
         credentials: "include",
