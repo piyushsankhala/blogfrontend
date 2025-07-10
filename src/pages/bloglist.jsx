@@ -18,10 +18,8 @@ export default function BlogList() {
 
       if (res.ok) {
         // ✅ Sort by newest first
-        const sorted = data.blogs.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setBloglist(sorted);
+        
+        setBloglist(data.blogs);
       } else {
         console.error("Fetch error:", data.message);
       }
