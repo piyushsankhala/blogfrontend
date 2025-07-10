@@ -18,7 +18,6 @@ export default function BlogList() {
       );
 
       const data = await res.json();
-
       if (res.ok) {
         setBloglist(data.blogs);
       } else {
@@ -44,7 +43,6 @@ export default function BlogList() {
       );
 
       const data = await res.json();
-
       if (res.ok) {
         fetchAllBlogs(); // Refresh blogs
       } else {
@@ -77,15 +75,16 @@ export default function BlogList() {
 
   useEffect(() => {
     fetchAllBlogs();
-    const interval = setInterval(fetchAllBlogs, 2000);
-    return () => clearInterval(interval);
+    // Comment out to avoid rate limits
+    // const interval = setInterval(fetchAllBlogs, 2000);
+    // return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 px-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 max-w-3xl mx-auto gap-2">
-        <h1 className="text-3xl font-bold text-gray-800">Explore Blogs</h1>
+        <h1 className="text-3xl font-bold text-gray-800">📸 InstaBlog</h1>
         <div className="flex gap-2">
           <button
             onClick={() => navigate("/profile")}
@@ -103,25 +102,25 @@ export default function BlogList() {
       </div>
 
       {/* Blog List */}
-      <div className="w-full max-w-3xl mx-auto flex flex-col gap-6">
+      <div className="w-full max-w-2xl mx-auto flex flex-col gap-6">
         {bloglist.length === 0 ? (
           <p className="text-center text-gray-500 text-lg">No blogs found.</p>
         ) : (
           bloglist.map((blog) => (
             <div
               key={blog._id}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+              className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
             >
-              {/* User Info */}
-              <div className="flex items-center gap-3 p-4 border-b border-gray-100">
+              {/* Header */}
+              <div className="flex items-center gap-3 px-4 py-3">
                 <img
                   src={`https://api.dicebear.com/8.x/initials/svg?seed=${blog.user?.username || "U"}`}
                   alt="User"
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-10 h-10 rounded-full"
                 />
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-800">
-                    {blog.user?.username || "Unknown User"}
+                  <h3 className="font-semibold text-sm text-gray-900">
+                    {blog.user?.username || "Unknown"}
                   </h3>
                   <p className="text-xs text-gray-500">
                     {new Date(blog.createdAt).toLocaleString()}
@@ -129,36 +128,36 @@ export default function BlogList() {
                 </div>
               </div>
 
-              {/* Blog Image */}
+              {/* Image */}
               {blog.image && (
                 <img
                   src={blog.image}
                   alt="Blog"
-                  className="w-full h-72 object-cover"
+                  className="w-full max-h-[500px] object-cover"
                 />
               )}
 
-              {/* Blog Content */}
-              <div className="p-4">
-                <p className="text-gray-800 text-sm mb-3">
-                  {blog.content?.length > 200
-                    ? blog.content.slice(0, 200) + "..."
-                    : blog.content}
-                </p>
-
-                <div className="flex justify-between items-center">
+              {/* Content */}
+              <div className="px-4 py-3 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => togglelikes(blog._id)}
-                    className="flex items-center gap-1 text-blue-600 font-semibold hover:text-blue-800"
+                    className="text-xl hover:text-red-500 transition"
+                    title="Like"
                   >
-                    👍 {blog.likes?.length || 0}
+                    ❤️
                   </button>
-                  <span className="text-xs text-gray-400">
-                    {blog.likes?.length > 0
-                      ? `${blog.likes.length} like${blog.likes.length > 1 ? "s" : ""}`
-                      : "No likes yet"}
+                  <span className="text-sm text-gray-700">
+                    {blog.likes?.length || 0} like
+                    {blog.likes?.length !== 1 ? "s" : ""}
                   </span>
                 </div>
+
+                <p className="text-sm text-gray-800 leading-relaxed">
+                  {blog.content?.length > 250
+                    ? blog.content.slice(0, 250) + "..."
+                    : blog.content}
+                </p>
               </div>
             </div>
           ))
