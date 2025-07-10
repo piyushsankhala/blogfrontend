@@ -75,9 +75,9 @@ export default function BlogList() {
 
   useEffect(() => {
     fetchAllBlogs();
-    // Comment out to avoid rate limits
-    // const interval = setInterval(fetchAllBlogs, 2000);
-    // return () => clearInterval(interval);
+    
+     const interval = setInterval(fetchAllBlogs, 2000);
+     return () => clearInterval(interval);
   }, []);
 
   return (
