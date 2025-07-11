@@ -19,9 +19,7 @@ export default function BlogList() {
 
       const data = await res.json();
       if (res.ok) {
-        setTimeout(() => {
-    fetchAllBlogs();  // Now the DB likely has updated likes
-  }, 300); 
+        setBloglist(data.blogs);
       } else {
         console.error("Fetch error:", data.message);
       }
@@ -46,7 +44,9 @@ export default function BlogList() {
 
       const data = await res.json();
       if (res.ok) {
-        fetchAllBlogs(); // Refresh blogs
+        fsetTimeout(() => {
+    fetchAllBlogs();  // Now the DB likely has updated likes
+  }, 300);  // Refresh blogs
       } else {
         console.log("Error:", data.message);
       }
