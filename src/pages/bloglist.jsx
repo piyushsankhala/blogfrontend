@@ -46,7 +46,7 @@ export default function BlogList() {
       if (res.ok) {
         fsetTimeout(() => {
     fetchAllBlogs();  // Now the DB likely has updated likes
-  }, 300);  // Refresh blogs
+  }, 3000);  // Refresh blogs
       } else {
         console.log("Error:", data.message);
       }
