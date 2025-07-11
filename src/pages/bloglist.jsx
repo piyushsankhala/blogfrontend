@@ -44,7 +44,7 @@ export default function BlogList() {
 
       const data = await res.json();
       if (res.ok) {
-        fsetTimeout(() => {
+        setTimeout(() => {
     fetchAllBlogs();  // Now the DB likely has updated likes
   }, 3000);  // Refresh blogs
       } else {
