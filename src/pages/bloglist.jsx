@@ -29,31 +29,34 @@ export default function BlogList() {
   };
 
   const togglelikes = async (blogid) => {
-    try {
-      const res = await fetchWithRefresh(
-        "https://blogbackend-3-l6mp.onrender.com/api/blog/togglelike",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ blogid }),
-        }
-      );
-
-      const data = await res.json();
-      if (res.ok) {
-        setTimeout(() => {
-    fetchAllBlogs();  // Now the DB likely has updated likes
-  }, 3000);  // Refresh blogs
-      } else {
-        console.log("Error:", data.message);
+  try {
+    const res = await fetchWithRefresh(
+      "https://blogbackend-3-l6mp.onrender.com/api/blog/togglelike",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ blogid }),
       }
-    } catch (error) {
-      console.error("Toggle error:", error);
+    );
+
+    const data = await res.json();
+    if (res.ok) {
+      // ⚡ update only the toggled blog, not full re-fetch
+      setBloglist((prev) =>
+        prev.map((blog) =>
+          blog._id === data.updatedBlog._id ? data.updatedBlog : blog
+        )
+      );
+    } else {
+      console.log("Error:", data.message);
     }
-  };
+  } catch (error) {
+    console.error("Toggle error:", error);
+  }
+};
 
   const handleLogout = async () => {
     try {
