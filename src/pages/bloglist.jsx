@@ -75,8 +75,6 @@ export default function BlogList() {
 
   useEffect(() => {
     fetchAllBlogs();
-    
-     
   }, []);
 
   return (
@@ -129,11 +127,13 @@ export default function BlogList() {
 
               {/* Image */}
               {blog.image && (
-                <img
-                  src={blog.image}
-                  alt="Blog"
-                  className="w-full max-h-[500px] object-cover"
-                />
+                <div className="w-full bg-black flex justify-center items-center">
+                  <img
+                    src={blog.image}
+                    alt="Blog"
+                    className="w-full max-h-[500px] object-contain"
+                  />
+                </div>
               )}
 
               {/* Content */}
