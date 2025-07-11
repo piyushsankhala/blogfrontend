@@ -19,7 +19,9 @@ export default function BlogList() {
 
       const data = await res.json();
       if (res.ok) {
-        setBloglist(data.blogs);
+        setTimeout(() => {
+    fetchAllBlogs();  // Now the DB likely has updated likes
+  }, 300); 
       } else {
         console.error("Fetch error:", data.message);
       }
