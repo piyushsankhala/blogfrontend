@@ -77,6 +77,7 @@ export default function BlogList() {
       console.error("Logout error:", err);
     }
   };
+ 
 
   useEffect(() => {
     fetchAllBlogs();
@@ -121,7 +122,7 @@ export default function BlogList() {
                   className="w-10 h-10 rounded-full"
                 />
                 <div>
-                  <h3 className="font-semibold text-sm text-gray-900">
+                  <h3  onClick ={ () =>{navigate(`/userprofile/${blog.user._id}`)}} className="font-semibold text-sm text-gray-900">
                     {blog.user?.username || "Unknown"}
                   </h3>
                   <p className="text-xs text-gray-500">

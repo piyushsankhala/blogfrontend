@@ -8,6 +8,7 @@ import BlogList from "./pages/bloglist.jsx";
 import Profile from "./pages/profile.jsx";
 import UploadPost from "./pages/upload.jsx";
 import Otp from "./pages/otp.jsx";
+import UserProfile from "./pages/userprofile.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -61,6 +62,10 @@ export default function App() {
       <Route
         path="/upload"
         element={user ? <UploadPost /> : <Navigate to="/login" replace />}
+      />
+      <Route
+        path="/userprofile/:id"
+        element={user ? <UserProfile/>: <Navigate to="/login" replace />}
       />
     </Routes>
   );
