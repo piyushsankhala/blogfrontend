@@ -76,7 +76,7 @@ export default function UploadPost() {
             <img
               src={uploadedPost.image}
               alt="Uploaded"
-              className="w-full h-64 object-cover rounded-lg mb-4"
+              className="w-full h-64 object-contain rounded-lg mb-4"
             />
           )}
 
