@@ -56,7 +56,7 @@ export default function UserProfile() {
               <img
                 src={blog.image}
                 alt={blog.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-contain"
               />
             ) : (
               <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
