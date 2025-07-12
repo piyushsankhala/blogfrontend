@@ -59,7 +59,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-100 py-6 px-4">
       {/* 🔷 Profile Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between max-w-3xl mx-auto gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between max-w-4xl mx-auto gap-4 mb-8">
         <div className="flex items-center gap-4">
           <img
             src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "U"}`}
@@ -96,52 +96,38 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* 📝 Blog Feed */}
-      <div className="w-full max-w-2xl mx-auto flex flex-col gap-6">
+      {/* 📝 Blog Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {blogs.length === 0 ? (
-          <p className="text-center text-gray-500 text-lg">No blogs found.</p>
+          <p className="col-span-full text-center text-gray-500 text-lg">No blogs found.</p>
         ) : (
           blogs.map((blog) => (
             <div
               key={blog._id}
-              className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
+              className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition"
             >
-              {/* Post Header */}
-              <div className="flex items-center gap-3 px-4 py-3">
+              {/* Blog Image */}
+              {blog.image ? (
                 <img
-                  src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "U"}`}
-                  alt="User"
-                  className="w-10 h-10 rounded-full"
+                  src={blog.image}
+                  alt="Blog"
+                  className="w-full object-contain bg-black"
                 />
-                <div>
-                  <h3 className="font-semibold text-sm text-gray-900">
-                    {username || "Unknown"}
-                  </h3>
-                  <p className="text-xs text-gray-500">
-                    {new Date(blog.createdAt).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              {/* Post Image */}
-              {blog.image && (
-                <div className="w-full bg-black flex justify-center items-center">
-                  <img
-                    src={blog.image}
-                    alt="Blog"
-                    className="w-full max-h-[500px] object-contain"
-                  />
+              ) : (
+                <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
+                  No Image
                 </div>
               )}
 
-              {/* Post Content */}
-              <div className="px-4 py-3 flex flex-col gap-3">
+              {/* Blog Info */}
+              <div className="p-4 flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-gray-700 text-sm">
                   <span className="text-xl">❤️</span>
-                  {blog.likes.length} like
-                  {blog.likes.length !== 1 ? "s" : ""}
+                  {blog.likes.length} like{blog.likes.length !== 1 ? "s" : ""}
                 </div>
-
+                <p className="text-xs text-gray-500">
+                  {new Date(blog.createdAt).toLocaleString()}
+                </p>
                 <p className="text-sm text-gray-800 leading-relaxed">
                   {blog.content?.length > 250
                     ? blog.content.slice(0, 250) + "..."
