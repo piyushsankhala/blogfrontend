@@ -59,9 +59,9 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 px-4 max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gray-100 py-6 px-4">
       {/* 📌 Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between max-w-3xl mx-auto gap-4 mb-6">
         <div className="flex items-center gap-4">
           <img
             src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "U"}`}
@@ -76,19 +76,19 @@ export default function Profile() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate("/upload")}
-            className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition text-sm"
           >
             ➕ Create Post
           </button>
           <button
             onClick={() => navigate("/bloglist")}
-            className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition"
+            className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition text-sm"
           >
             📄 View All Blogs
           </button>
           <button
             onClick={handleLogout}
-            className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition"
+            className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition text-sm"
           >
             🚪 Logout
           </button>
@@ -96,32 +96,60 @@ export default function Profile() {
       </div>
 
       {/* 📝 Blog List */}
-      {blogs.length === 0 ? (
-        <p className="text-center text-gray-500">No blogs found.</p>
-      ) : (
-        <div className="flex flex-col gap-6">
-          {blogs.map((blog) => (
+      <div className="w-full max-w-2xl mx-auto flex flex-col gap-6">
+        {blogs.length === 0 ? (
+          <p className="text-center text-gray-500 text-lg">No blogs found.</p>
+        ) : (
+          blogs.map((blog) => (
             <div
               key={blog._id}
-              className="bg-white rounded-xl shadow-md p-4 overflow-hidden"
+              className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
             >
-              {blog.image && (
+              {/* Blog Header */}
+              <div className="flex items-center gap-3 px-4 py-3">
                 <img
-                  src={blog.image}
-                  alt="blog"
-                  className="w-full h-64 object-cover rounded-md mb-4"
+                  src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "U"}`}
+                  alt="User"
+                  className="w-10 h-10 rounded-full"
                 />
+                <div>
+                  <h3 className="font-semibold text-sm text-gray-900">
+                    {username || "Unknown"}
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    {new Date(blog.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              {/* Blog Image */}
+              {blog.image && (
+                <div className="w-full bg-black flex justify-center items-center">
+                  <img
+                    src={blog.image}
+                    alt="Blog"
+                    className="w-full max-h-[500px] object-contain"
+                  />
+                </div>
               )}
 
-              <p className="text-gray-800 text-sm mb-2">{blog.content}</p>
+              {/* Content and Likes */}
+              <div className="px-4 py-3 flex flex-col gap-3">
+                <div className="flex items-center gap-2 text-gray-700 text-sm">
+                  <span className="text-xl">❤️</span>
+                  {blog.likes.length} like{blog.likes.length !== 1 ? "s" : ""}
+                </div>
 
-              <div className="text-blue-600 font-medium text-sm flex items-center gap-2">
-                <span className="text-xl">👍</span> {blog.likes.length} likes
+                <p className="text-sm text-gray-800 leading-relaxed">
+                  {blog.content?.length > 250
+                    ? blog.content.slice(0, 250) + "..."
+                    : blog.content}
+                </p>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }
