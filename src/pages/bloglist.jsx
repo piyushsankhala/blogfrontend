@@ -120,6 +120,7 @@ export default function BlogList() {
                   src={`https://api.dicebear.com/8.x/initials/svg?seed=${blog.user?.username || "U"}`}
                   alt="User"
                   className="w-10 h-10 rounded-full"
+                  onClick={()=>{navigate(`/userprofile/${blog.user._id}`)}}
                 />
                 <div>
                   <h3  onClick ={ () =>{navigate(`/userprofile/${blog.user._id}`)}} className="font-semibold text-sm text-gray-900">

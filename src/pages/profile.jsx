@@ -13,9 +13,7 @@ export default function Profile() {
         "https://blogbackend-3-l6mp.onrender.com/api/blog/getblogofexistinguser",
         {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
         }
       );
@@ -60,17 +58,20 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 px-4">
-      {/* 📌 Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between max-w-3xl mx-auto gap-4 mb-6">
+      {/* 🔷 Profile Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between max-w-3xl mx-auto gap-4 mb-8">
         <div className="flex items-center gap-4">
           <img
             src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "U"}`}
             alt="Profile"
-            className="w-12 h-12 rounded-full object-cover"
+            className="w-16 h-16 rounded-full object-cover"
           />
-          <h1 className="text-2xl font-bold text-gray-800">
-            {username ? username : "Your"}'s Profile
-          </h1>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              {username ? `${username}'s Profile` : "Your Profile"}
+            </h1>
+            <p className="text-sm text-gray-600">{blogs.length} posts</p>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -95,7 +96,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* 📝 Blog List */}
+      {/* 📝 Blog Feed */}
       <div className="w-full max-w-2xl mx-auto flex flex-col gap-6">
         {blogs.length === 0 ? (
           <p className="text-center text-gray-500 text-lg">No blogs found.</p>
@@ -105,7 +106,7 @@ export default function Profile() {
               key={blog._id}
               className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
             >
-              {/* Blog Header */}
+              {/* Post Header */}
               <div className="flex items-center gap-3 px-4 py-3">
                 <img
                   src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "U"}`}
@@ -122,7 +123,7 @@ export default function Profile() {
                 </div>
               </div>
 
-              {/* Blog Image */}
+              {/* Post Image */}
               {blog.image && (
                 <div className="w-full bg-black flex justify-center items-center">
                   <img
@@ -133,11 +134,12 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* Content and Likes */}
+              {/* Post Content */}
               <div className="px-4 py-3 flex flex-col gap-3">
                 <div className="flex items-center gap-2 text-gray-700 text-sm">
                   <span className="text-xl">❤️</span>
-                  {blog.likes.length} like{blog.likes.length !== 1 ? "s" : ""}
+                  {blog.likes.length} like
+                  {blog.likes.length !== 1 ? "s" : ""}
                 </div>
 
                 <p className="text-sm text-gray-800 leading-relaxed">
