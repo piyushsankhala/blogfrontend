@@ -9,7 +9,7 @@ export default function UserProfile() {
 
   const getBlogOfUser = async () => {
     try {
-      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/getblogofuser", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/blog/blogofuser", {
         method: "POST",
         credentials: "include",
         headers: {
