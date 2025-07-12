@@ -8,7 +8,7 @@ export default function UserChatList() {
 
   const fetchUserList = async () => {
     try {
-      const res = await fetchWithRefresh("/api/user/getchatusers", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/getchatusers", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
