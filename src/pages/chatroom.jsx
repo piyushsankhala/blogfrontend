@@ -5,7 +5,7 @@ import { fetchWithRefresh } from '../utils/fetchwithrefresh';
 export default function Chatroom() {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState('');
-  const [user, setUser] = useState(null); // 👈 for checking message ownership
+  const [user, setUser] = useState(""); // current user's ID
   const { id: recieverId } = useParams();
   const messagesEndRef = useRef(null);
 
@@ -20,7 +20,6 @@ export default function Chatroom() {
       const data = await res.json();
       if (res.ok) {
         setChat(data.data.messages);
-        setCurrentUserId(data.data.currentUserId); // 👈 get your own ID from backend
         scrollToBottom();
       } else {
         console.log(data.message);
@@ -56,25 +55,26 @@ export default function Chatroom() {
       sendMessage();
     }
   };
-  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
   const fetchCurrentUser = async () => {
-      try {
-        const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/currentuser", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setUser(data.currentuserid);
-        }
-      } catch (err) {
-        console.error("Auth check failed:", err);
+    try {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/currentuser", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.currentuserid); // string ID
       }
+    } catch (err) {
+      console.error("Auth check failed:", err);
+    }
+  }; // 🛠️ FIX: Missing closing brace here
 
   useEffect(() => {
     accessChat();
@@ -91,7 +91,7 @@ export default function Chatroom() {
       <div className="flex-1 overflow-y-auto px-2 space-y-3">
         {chat.length > 0 ? (
           chat.map((msg) => {
-            const isSender = msg.sender._id === user
+            const isSender = msg.sender._id === user;
 
             return (
               <div
@@ -128,7 +128,7 @@ export default function Chatroom() {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           placeholder="Type your message..."
           className="flex-1 px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
@@ -141,5 +141,4 @@ export default function Chatroom() {
       </div>
     </div>
   );
-}
 }
