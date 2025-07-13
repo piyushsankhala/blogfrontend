@@ -78,7 +78,8 @@ export default function Chatroom() {
   useEffect(() => {
     fetchCurrentUser(); // 🔑 get user first
   }, []);
-  console.log(chat)
+  
+  
 
   useEffect(() => {
     if (user) {
@@ -98,7 +99,7 @@ export default function Chatroom() {
           <p className="text-center text-gray-400 mt-10">Loading...</p>
         ) : chat.length > 0 ? (
           chat.map((msg) => {
-            const isSender = msg.sender._id === user;
+            const isSender = msg.sender === user;
             return (
               <div key={msg._id} className="flex w-full">
                 <div
