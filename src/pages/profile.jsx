@@ -36,7 +36,7 @@ export default function Profile() {
   const fetchUnreadCount = async () => {
     try {
       const res = await fetchWithRefresh(
-        "https://blogbackend-3-l6mp.onrender.com/api/chat/unreadcount",
+        "https://blogbackend-3-l6mp.onrender.com/api/user/unreadcount",
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
