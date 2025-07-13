@@ -74,7 +74,7 @@ export default function Chatroom() {
     } catch (err) {
       console.error("Auth check failed:", err);
     }
-  }; // 🛠️ FIX: Missing closing brace here
+  };
 
   useEffect(() => {
     accessChat();
@@ -90,32 +90,25 @@ export default function Chatroom() {
       {/* Message Display Area */}
       <div className="flex-1 overflow-y-auto px-2 space-y-3">
         {chat.length > 0 ? (
-          chat.map((msg) => {
-            const isSender = msg.sender._id === user;
-
-            return (
+          chat.map((msg) => (
+            <div key={msg._id} className="flex w-full">
               <div
-                key={msg._id}
-                className={`flex ${isSender ? "justify-end" : "justify-start"}`}
+                className={`max-w-[75%] px-4 py-2 rounded-xl text-sm mb-1 ${
+                  msg.sender._id === user
+                    ? "ml-auto bg-blue-600 text-white rounded-br-none"
+                    : "mr-auto bg-gray-200 text-gray-900 rounded-bl-none"
+                }`}
               >
-                <div
-                  className={`max-w-[75%] px-4 py-2 rounded-xl text-sm ${
-                    isSender
-                      ? "bg-blue-500 text-white rounded-br-none"
-                      : "bg-gray-200 text-gray-900 rounded-bl-none"
-                  }`}
-                >
-                  {msg.content}
-                  <div className="text-[10px] text-gray-400 text-right mt-1">
-                    {new Date(msg.createdAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </div>
+                {msg.content}
+                <div className="text-[10px] text-gray-400 text-right mt-1">
+                  {new Date(msg.createdAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </div>
               </div>
-            );
-          })
+            </div>
+          ))
         ) : (
           <p className="text-center text-gray-400 mt-10">No messages found.</p>
         )}
