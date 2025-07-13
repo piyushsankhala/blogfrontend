@@ -16,7 +16,7 @@ export default function UserChatList() {
 
       const data = await res.json();
       if (res.ok) {
-        setUserlist(data.validusers); // Make sure backend returns `users`, not `chatusers`
+        setUserlist(data.validUsers); // Make sure backend returns `users`, not `chatusers`
       } else {
         console.error(data.message);
       }
