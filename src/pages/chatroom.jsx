@@ -61,7 +61,9 @@ export default function Chatroom() {
 
   useEffect(() => {
     accessChat();
-    // optionally: polling or sockets
+    const interval = setInterval(()=>
+    accessChat,1000)
+    return ()=>clearInterval(interval)
   }, []);
 
   return (
