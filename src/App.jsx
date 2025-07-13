@@ -10,6 +10,7 @@ import UploadPost from "./pages/upload.jsx";
 import Otp from "./pages/otp.jsx";
 import UserProfile from "./pages/userprofile.jsx";
 import UserChatList from "./pages/userchatlist.jsx";
+import Chatroom from "./pages/chatroom.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -71,6 +72,10 @@ export default function App() {
       <Route
         path="/userchatlist"
         element={user ? <UserChatList/>: <Navigate to="/login" replace />}
+      />
+       <Route
+        path="/chatroom/:id"
+        element={user ? <Chatroom/>: <Navigate to="/login" replace />}
       />
     </Routes>
   );

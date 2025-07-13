@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { fetchWithRefresh } from "../utils/fetchwithrefresh";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function UserProfile() {
   const { id: userid } = useParams();
   const [username, setUsername] = useState("");
   const [blogs, setBlogs] = useState([]);
+  const navigate = useNavigate();
 
   const getBlogOfUser = async () => {
     try {
@@ -36,6 +37,26 @@ export default function UserProfile() {
     }
   };
 
+  const startchat = async () => {
+    try {
+      const res = await fetchWithRefresh("/api/chat/createchat", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userid }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        navigate(`/chatroom/${userid}`);
+      } else {
+        console.error("Error creating chat room:", data.message);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
   useEffect(() => {
     getBlogOfUser();
   }, []);
@@ -43,16 +64,26 @@ export default function UserProfile() {
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Profile Header */}
-      <div className="flex items-center mb-8">
-        <img
-          src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "User"}`}
-          alt="User Avatar"
-          className="w-24 h-24 rounded-full object-cover mr-6"
-        />
-        <div>
-          <h2 className="text-2xl font-bold">{username || "User"}</h2>
-          <p className="text-gray-600">{blogs.length} Posts</p>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center">
+          <img
+            src={`https://api.dicebear.com/8.x/initials/svg?seed=${username || "User"}`}
+            alt="User Avatar"
+            className="w-24 h-24 rounded-full object-cover mr-6"
+          />
+          <div>
+            <h2 className="text-2xl font-bold">{username || "User"}</h2>
+            <p className="text-gray-600">{blogs.length} Posts</p>
+          </div>
         </div>
+
+        {/* Message Button */}
+        <button
+          onClick={startchat}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          Message
+        </button>
       </div>
 
       {/* Blog Grid */}
