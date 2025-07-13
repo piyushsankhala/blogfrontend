@@ -74,6 +74,7 @@ export default function Profile() {
           </div>
         </div>
 
+        {/* 🔘 Action Buttons */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate("/upload")}
@@ -86,6 +87,12 @@ export default function Profile() {
             className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition text-sm"
           >
             📄 View All Blogs
+          </button>
+          <button
+            onClick={() => navigate("/chatuselist")}
+            className="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition text-sm"
+          >
+            💬 Messages
           </button>
           <button
             onClick={handleLogout}

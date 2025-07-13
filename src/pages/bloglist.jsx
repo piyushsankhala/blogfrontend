@@ -29,34 +29,33 @@ export default function BlogList() {
   };
 
   const togglelikes = async (blogid) => {
-  try {
-    const res = await fetchWithRefresh(
-      "https://blogbackend-3-l6mp.onrender.com/api/blog/togglelike",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ blogid }),
-      }
-    );
-
-    const data = await res.json();
-    if (res.ok) {
-      // ⚡ update only the toggled blog, not full re-fetch
-      setBloglist((prev) =>
-        prev.map((blog) =>
-          blog._id === data.updatedBlog._id ? data.updatedBlog : blog
-        )
+    try {
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/blog/togglelike",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ blogid }),
+        }
       );
-    } else {
-      console.log("Error:", data.message);
+
+      const data = await res.json();
+      if (res.ok) {
+        setBloglist((prev) =>
+          prev.map((blog) =>
+            blog._id === data.updatedBlog._id ? data.updatedBlog : blog
+          )
+        );
+      } else {
+        console.log("Error:", data.message);
+      }
+    } catch (error) {
+      console.error("Toggle error:", error);
     }
-  } catch (error) {
-    console.error("Toggle error:", error);
-  }
-};
+  };
 
   const handleLogout = async () => {
     try {
@@ -77,7 +76,6 @@ export default function BlogList() {
       console.error("Logout error:", err);
     }
   };
- 
 
   useEffect(() => {
     fetchAllBlogs();
@@ -89,6 +87,12 @@ export default function BlogList() {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 max-w-3xl mx-auto gap-2">
         <h1 className="text-3xl font-bold text-gray-800">📸 InstaBlog</h1>
         <div className="flex gap-2">
+          <button
+            onClick={() => navigate("/chatuserlist")}
+            className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition text-sm"
+          >
+            💬 Messages
+          </button>
           <button
             onClick={() => navigate("/profile")}
             className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition text-sm"
@@ -120,10 +124,17 @@ export default function BlogList() {
                   src={`https://api.dicebear.com/8.x/initials/svg?seed=${blog.user?.username || "U"}`}
                   alt="User"
                   className="w-10 h-10 rounded-full cursor-pointer hover:underline"
-                  onClick={()=>{navigate(`/userprofile/${blog.user._id}`)}}
+                  onClick={() => {
+                    navigate(`/userprofile/${blog.user._id}`);
+                  }}
                 />
                 <div>
-                  <h3  onClick ={ () =>{navigate(`/userprofile/${blog.user._id}`)}} className=" cursor-pointer hover:underline font-semibold text-sm text-gray-900">
+                  <h3
+                    onClick={() => {
+                      navigate(`/userprofile/${blog.user._id}`);
+                    }}
+                    className="cursor-pointer hover:underline font-semibold text-sm text-gray-900"
+                  >
                     {blog.user?.username || "Unknown"}
                   </h3>
                   <p className="text-xs text-gray-500">

@@ -50,7 +50,7 @@ export default function UserChatList() {
           userlist.map((user) => (
             <div
               key={user._id}
-              onClick={() => navigate(`/chat/${user._id}`)}
+              onClick={() => navigate(`/chatroom/${user._id}`)}
               className="flex items-center gap-4 bg-white shadow-sm rounded-xl px-4 py-3 cursor-pointer hover:bg-gray-50 transition"
             >
               <img
