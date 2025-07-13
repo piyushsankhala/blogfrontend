@@ -5,7 +5,7 @@ import { fetchWithRefresh } from '../utils/fetchwithrefresh';
 export default function Chatroom() {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState('');
-  const [user, setUser] = useState(""); // current user's ID
+  const [user, setUser] = useState(null); // will be set to string ID
   const { id: recieverId } = useParams();
   const messagesEndRef = useRef(null);
 
@@ -69,7 +69,7 @@ export default function Chatroom() {
       });
       const data = await res.json();
       if (res.ok) {
-        setUser(data.currentuserid); // string ID
+        setUser(data.currentuserid);
       }
     } catch (err) {
       console.error("Auth check failed:", err);
@@ -77,11 +77,16 @@ export default function Chatroom() {
   };
 
   useEffect(() => {
-    accessChat();
-    fetchCurrentUser();
-    const interval = setInterval(() => accessChat(), 1000);
-    return () => clearInterval(interval);
+    fetchCurrentUser(); // 🔑 get user first
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      accessChat(); // ⏳ only after user is set
+      const interval = setInterval(() => accessChat(), 1000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
 
   return (
     <div className="max-w-3xl mx-auto p-4 flex flex-col h-[90vh] border rounded-xl shadow bg-white">
@@ -89,26 +94,31 @@ export default function Chatroom() {
 
       {/* Message Display Area */}
       <div className="flex-1 overflow-y-auto px-2 space-y-3">
-        {chat.length > 0 ? (
-          chat.map((msg) => (
-            <div key={msg._id} className="flex w-full">
-              <div
-                className={`max-w-[75%] px-4 py-2 rounded-xl text-sm mb-1 ${
-                  msg.sender._id === user
-                    ? "ml-auto bg-blue-600 text-white rounded-br-none"
-                    : "mr-auto bg-gray-200 text-gray-900 rounded-bl-none"
-                }`}
-              >
-                {msg.content}
-                <div className="text-[10px] text-gray-400 text-right mt-1">
-                  {new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+        {!user ? (
+          <p className="text-center text-gray-400 mt-10">Loading...</p>
+        ) : chat.length > 0 ? (
+          chat.map((msg) => {
+            const isSender = msg.sender._id === user;
+            return (
+              <div key={msg._id} className="flex w-full">
+                <div
+                  className={`max-w-[75%] px-4 py-2 rounded-xl text-sm mb-1 ${
+                    isSender
+                      ? "ml-auto bg-blue-600 text-white rounded-br-none"
+                      : "mr-auto bg-gray-200 text-gray-900 rounded-bl-none"
+                  }`}
+                >
+                  {msg.content}
+                  <div className="text-[10px] text-gray-400 text-right mt-1">
+                    {new Date(msg.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <p className="text-center text-gray-400 mt-10">No messages found.</p>
         )}
@@ -135,3 +145,4 @@ export default function Chatroom() {
     </div>
   );
 }
+
