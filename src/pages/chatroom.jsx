@@ -78,6 +78,7 @@ export default function Chatroom() {
 
   useEffect(() => {
     accessChat();
+    fetchCurrentUser();
     const interval = setInterval(() => accessChat(), 1000);
     return () => clearInterval(interval);
   }, []);
