@@ -10,7 +10,7 @@ export default function Chatroom() {
 
   const accessChat = async () => {
     try {
-      const res = await fetchWithRefresh("/api/chat/acesschat", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/chat/acesschat", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -31,7 +31,7 @@ export default function Chatroom() {
   const sendMessage = async () => {
     if (!message.trim()) return;
     try {
-      const res = await fetchWithRefresh("/api/message/sendmessage", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/message/send", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

@@ -39,7 +39,7 @@ export default function UserProfile() {
 
   const startchat = async () => {
     try {
-      const res = await fetchWithRefresh("/api/chat/createchat", {
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/chat/createchat", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
