@@ -18,7 +18,7 @@ export default function UserProfile() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ recieverid : userid }),
+          body: JSON.stringify({  userid }),
         }
       );
 
@@ -43,7 +43,7 @@ export default function UserProfile() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userid }),
+        body: JSON.stringify({ recieverid : userid }),
       });
 
       const data = await res.json();
