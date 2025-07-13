@@ -16,8 +16,7 @@ export default function UserChatList() {
 
       const data = await res.json();
       if (res.ok) {
-        setUserlist(data.validUsers); 
-        console.log(userlist)// Make sure backend returns `users`, not `chatusers`
+        setUserlist(data.validUsers);
       } else {
         console.error(data.message);
       }
@@ -28,6 +27,9 @@ export default function UserChatList() {
 
   useEffect(() => {
     fetchUserList();
+    const interval = setInterval(() => 
+      fetchUserList(),2000)
+     return () => clearInterval(interval);
   }, []);
 
   return (
@@ -54,14 +56,24 @@ export default function UserChatList() {
               onClick={() => navigate(`/chatroom/${user._id}`)}
               className="flex items-center gap-4 bg-white shadow-sm rounded-xl px-4 py-3 cursor-pointer hover:bg-gray-50 transition"
             >
-              <img
-                src={`https://api.dicebear.com/8.x/initials/svg?seed=${user.username}`}
-                alt="User"
-                className="w-12 h-12 rounded-full"
-              />
+              <div className="relative">
+                <img
+                  src={`https://api.dicebear.com/8.x/initials/svg?seed=${user.username}`}
+                  alt="User"
+                  className="w-12 h-12 rounded-full"
+                />
+                {user.messageindicator && (
+                  <span className="absolute top-0 right-0 block w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>
+                )}
+              </div>
               <div className="flex-1">
-                <h3 className="text-base font-semibold text-gray-800">
+                <h3 className="text-base font-semibold text-gray-800 flex items-center gap-2">
                   {user.username}
+                  {user.messageindicator && (
+                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                      New
+                    </span>
+                  )}
                 </h3>
                 <p className="text-sm text-gray-500">Tap to chat</p>
               </div>
