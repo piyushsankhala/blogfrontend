@@ -78,7 +78,7 @@ export default function Chatroom() {
   useEffect(() => {
     fetchCurrentUser(); // 🔑 get user first
   }, []);
-  console.log(chat.msg[0].sender)
+  console.log(chat[0].sender)
 
   useEffect(() => {
     if (user) {
