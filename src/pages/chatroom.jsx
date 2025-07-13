@@ -75,10 +75,10 @@ export default function Chatroom() {
       console.error("Auth check failed:", err);
     }
   };
-
   useEffect(() => {
     fetchCurrentUser(); // 🔑 get user first
   }, []);
+  console.log(chat.msg[0].sender)
 
   useEffect(() => {
     if (user) {
