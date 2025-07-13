@@ -18,7 +18,7 @@ export default function Chatroom() {
       });
       const data = await res.json();
       if (res.ok) {
-        setChat(Array.isArray(data.messages) ? data.messages : []);
+        setChat(Array.isArray(data.data.messages) ? data.messages : []);
         scrollToBottom();
       } else {
         console.log(data.message);
