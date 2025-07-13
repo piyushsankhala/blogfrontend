@@ -88,7 +88,7 @@ export default function BlogList() {
         <h1 className="text-3xl font-bold text-gray-800">📸 InstaBlog</h1>
         <div className="flex gap-2">
           <button
-            onClick={() => navigate("/chatuserlist")}
+            onClick={() => navigate("/userchatlist")}
             className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition text-sm"
           >
             💬 Messages

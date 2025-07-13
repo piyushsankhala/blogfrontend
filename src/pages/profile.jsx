@@ -89,7 +89,7 @@ export default function Profile() {
             📄 View All Blogs
           </button>
           <button
-            onClick={() => navigate("/chatuselist")}
+            onClick={() => navigate("/userchatlist")}
             className="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition text-sm"
           >
             💬 Messages
