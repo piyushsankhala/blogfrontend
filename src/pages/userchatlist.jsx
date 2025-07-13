@@ -24,6 +24,7 @@ export default function UserChatList() {
       console.error("Error fetching chat users:", err);
     }
   };
+  
 
   useEffect(() => {
     fetchUserList();

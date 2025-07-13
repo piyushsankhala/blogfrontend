@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function BlogList() {
   const [bloglist, setBloglist] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
 
   const fetchAllBlogs = async () => {
@@ -25,6 +26,28 @@ export default function BlogList() {
       }
     } catch (error) {
       console.error("Network error:", error);
+    }
+  };
+
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/chat/unreadcount",
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        setUnreadCount(data.unreadChatCount || 0);
+      } else {
+        console.error("Unread count error:", data.message);
+      }
+    } catch (error) {
+      console.error("Unread count fetch error:", error);
     }
   };
 
@@ -79,7 +102,13 @@ export default function BlogList() {
 
   useEffect(() => {
     fetchAllBlogs();
-    const interval = setInterval(()=>fetchAllBlogs(),15000)
+    fetchUnreadCount();
+
+    const interval = setInterval(() => {
+      fetchAllBlogs();
+      fetchUnreadCount();
+    }, 15000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -88,19 +117,26 @@ export default function BlogList() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 max-w-3xl mx-auto gap-2">
         <h1 className="text-3xl font-bold text-gray-800">📸 InstaBlog</h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
             onClick={() => navigate("/userchatlist")}
-            className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition text-sm"
+            className="relative bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition text-sm"
           >
             💬 Messages
+            {unreadCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                {unreadCount}
+              </span>
+            )}
           </button>
+
           <button
             onClick={() => navigate("/profile")}
             className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition text-sm"
           >
             My Profile
           </button>
+
           <button
             onClick={handleLogout}
             className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition text-sm"

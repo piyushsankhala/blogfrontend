@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Profile() {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
 
   const getBlogsOfExistingUser = async () => {
@@ -32,6 +33,28 @@ export default function Profile() {
     }
   };
 
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/chat/unreadcount",
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        setUnreadCount(data.unreadChatCount || 0);
+      } else {
+        console.error("Unread count error:", data.message);
+      }
+    } catch (err) {
+      console.error("Unread count fetch error:", err);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       const res = await fetch(
@@ -54,6 +77,13 @@ export default function Profile() {
 
   useEffect(() => {
     getBlogsOfExistingUser();
+    fetchUnreadCount();
+
+    const interval = setInterval(() => {
+      fetchUnreadCount();
+    }, 15000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -75,7 +105,7 @@ export default function Profile() {
         </div>
 
         {/* 🔘 Action Buttons */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 relative">
           <button
             onClick={() => navigate("/upload")}
             className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition text-sm"
@@ -84,67 +114,4 @@ export default function Profile() {
           </button>
           <button
             onClick={() => navigate("/bloglist")}
-            className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition text-sm"
-          >
-            📄 View All Blogs
-          </button>
-          <button
-            onClick={() => navigate("/userchatlist")}
-            className="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition text-sm"
-          >
-            💬 Messages
-          </button>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition text-sm"
-          >
-            🚪 Logout
-          </button>
-        </div>
-      </div>
-
-      {/* 📝 Blog Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-        {blogs.length === 0 ? (
-          <p className="col-span-full text-center text-gray-500 text-lg">No blogs found.</p>
-        ) : (
-          blogs.map((blog) => (
-            <div
-              key={blog._id}
-              className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition"
-            >
-              {/* Blog Image */}
-              {blog.image ? (
-                <img
-                  src={blog.image}
-                  alt="Blog"
-                  className="w-full object-contain bg-black"
-                />
-              ) : (
-                <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
-                  No Image
-                </div>
-              )}
-
-              {/* Blog Info */}
-              <div className="p-4 flex flex-col gap-2">
-                <div className="flex items-center gap-2 text-gray-700 text-sm">
-                  <span className="text-xl">❤️</span>
-                  {blog.likes.length} like{blog.likes.length !== 1 ? "s" : ""}
-                </div>
-                <p className="text-xs text-gray-500">
-                  {new Date(blog.createdAt).toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-800 leading-relaxed">
-                  {blog.content?.length > 250
-                    ? blog.content.slice(0, 250) + "..."
-                    : blog.content}
-                </p>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
+            className="bg-green-600 text-white px-4 py-2 round
