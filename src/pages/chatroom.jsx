@@ -123,7 +123,7 @@ export default function Chatroom() {
         ) : (
           <p className="text-center text-gray-400 mt-10">No messages found.</p>
         )}
-        <div ref={messagesEndRef} />
+        <div  />
       </div>
 
       {/* Input Field */}
