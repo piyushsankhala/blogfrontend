@@ -114,6 +114,7 @@ export default function BlogList() {
       } catch (err) {
         console.error("Auth check failed:", err);
       } 
+    }
 
   useEffect(() => {
     fetchAllBlogs();
@@ -239,4 +240,4 @@ export default function BlogList() {
     </div>
   );
 }
-}
+
