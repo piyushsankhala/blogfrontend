@@ -5,9 +5,13 @@ import { fetchWithRefresh } from '../utils/fetchwithrefresh';
 export default function Chatroom() {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState('');
-  const [user, setUser] = useState(null); // will be set to string ID
+  const [user, setUser] = useState(null);
   const { id: recieverId } = useParams();
   const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const accessChat = async () => {
     try {
@@ -20,7 +24,6 @@ export default function Chatroom() {
       const data = await res.json();
       if (res.ok) {
         setChat(data.data.messages);
-        scrollToBottom();
       } else {
         console.log(data.message);
       }
@@ -56,10 +59,6 @@ export default function Chatroom() {
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   const fetchCurrentUser = async () => {
     try {
       const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/currentuser", {
@@ -75,19 +74,23 @@ export default function Chatroom() {
       console.error("Auth check failed:", err);
     }
   };
+
   useEffect(() => {
-    fetchCurrentUser(); // 🔑 get user first
+    fetchCurrentUser();
   }, []);
-  
-  
 
   useEffect(() => {
     if (user) {
-      accessChat(); // ⏳ only after user is set
+      accessChat();
       const interval = setInterval(() => accessChat(), 1000);
       return () => clearInterval(interval);
     }
   }, [user]);
+
+  // 👇 Auto-scroll every time chat updates
+  useEffect(() => {
+    scrollToBottom();
+  }, [chat]);
 
   return (
     <div className="max-w-3xl mx-auto p-4 flex flex-col h-[90vh] border rounded-xl shadow bg-white">
@@ -123,7 +126,7 @@ export default function Chatroom() {
         ) : (
           <p className="text-center text-gray-400 mt-10">No messages found.</p>
         )}
-        <div  />
+        <div ref={messagesEndRef} /> {/* 👈 Scroll target */}
       </div>
 
       {/* Input Field */}
@@ -146,4 +149,3 @@ export default function Chatroom() {
     </div>
   );
 }
-
