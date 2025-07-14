@@ -18,7 +18,7 @@ export default function UserProfile() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({  userid }),
+          body: JSON.stringify({ userid }),
         }
       );
 
@@ -39,12 +39,15 @@ export default function UserProfile() {
 
   const startchat = async () => {
     try {
-      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/chat/createchat", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recieverid : userid }),
-      });
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/chat/createchat",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ recieverid: userid }),
+        }
+      );
 
       const data = await res.json();
       if (res.ok) {
@@ -93,7 +96,7 @@ export default function UserProfile() {
             key={blog._id}
             className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col"
           >
-            {/* ✅ Full Image Without Crop */}
+            {/* Blog Image */}
             {blog.image ? (
               <div className="bg-black p-2 flex items-center justify-center">
                 <img
@@ -108,19 +111,27 @@ export default function UserProfile() {
               </div>
             )}
 
-            {/* Content */}
+            {/* Blog Content */}
             <div className="p-3 flex flex-col gap-1">
-              <h3 className="font-semibold text-sm text-gray-800">
-                {blog.title || "Untitled Post"}
-              </h3>
               <p className="text-xs text-gray-600">
                 {new Date(blog.createdAt).toLocaleDateString()}
               </p>
-              <p className="text-sm text-gray-700 mt-1">
-                {blog.content?.length > 100
-                  ? blog.content.slice(0, 100) + "..."
-                  : blog.content}
-              </p>
+
+              <div className="px-2 py-3 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  ❤️
+                  <span className="text-sm text-gray-700">
+                    {blog.likes?.length || 0} like
+                    {blog.likes?.length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+
+                <p className="text-sm text-gray-700 mt-1">
+                  {blog.content?.length > 100
+                    ? blog.content.slice(0, 100) + "..."
+                    : blog.content}
+                </p>
+              </div>
             </div>
           </div>
         ))}
