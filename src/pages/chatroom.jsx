@@ -7,20 +7,10 @@ export default function Chatroom() {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
   const { id: recieverId } = useParams();
-
   const messagesEndRef = useRef(null);
-  const messagesContainerRef = useRef(null); // 👈 scroll container ref
 
   const scrollToBottom = () => {
-    const container = messagesContainerRef.current;
-    if (!container) return;
-
-    const isNearBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-
-    if (isNearBottom) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const accessChat = async () => {
@@ -97,6 +87,7 @@ export default function Chatroom() {
     }
   }, [user]);
 
+  // 👇 Auto-scroll every time chat updates
   useEffect(() => {
     scrollToBottom();
   }, [chat]);
@@ -106,10 +97,7 @@ export default function Chatroom() {
       <h2 className="text-xl font-semibold mb-4 border-b pb-2">Chatroom</h2>
 
       {/* Message Display Area */}
-      <div
-        ref={messagesContainerRef} // 👈 scroll container
-        className="flex-1 overflow-y-auto px-2 space-y-3"
-      >
+      <div className="flex-1 overflow-y-auto px-2 space-y-3">
         {!user ? (
           <p className="text-center text-gray-400 mt-10">Loading...</p>
         ) : chat.length > 0 ? (
@@ -138,7 +126,7 @@ export default function Chatroom() {
         ) : (
           <p className="text-center text-gray-400 mt-10">No messages found.</p>
         )}
-        <div ref={messagesEndRef} /> {/* 👈 scroll target */}
+        <div ref={messagesEndRef} /> {/* 👈 Scroll target */}
       </div>
 
       {/* Input Field */}
