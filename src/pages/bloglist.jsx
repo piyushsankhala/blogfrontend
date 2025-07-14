@@ -6,7 +6,7 @@ export default function BlogList() {
   const [bloglist, setBloglist] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
-  const[user,setUser] = useState("")
+  const[User,setUser] = useState("")
 
   const fetchAllBlogs = async () => {
     try {
@@ -179,7 +179,7 @@ export default function BlogList() {
                   alt="User"
                   className="w-10 h-10 rounded-full cursor-pointer hover:underline"
                   onClick={() => {
-                        user._id === User ? navigate('/profile') : navigate(`/userprofile/${blog.user._id}`);
+                       blog.user._id === User ? navigate('/profile') : navigate(`/userprofile/${blog.user._id}`);
                     
                     
                   }}
@@ -187,7 +187,7 @@ export default function BlogList() {
                 <div>
                   <h3
                     onClick={() => {
-                      navigate(`/userprofile/${blog.user._id}`);
+                      blog.user._id === User ? navigate('/profile') : navigate(`/userprofile/${blog.user._id}`)
                     }}
                     className="cursor-pointer hover:underline font-semibold text-sm text-gray-900"
                   >
