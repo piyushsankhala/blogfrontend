@@ -6,6 +6,7 @@ export default function BlogList() {
   const [bloglist, setBloglist] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
+  const[user,setUser] = useState("")
 
   const fetchAllBlogs = async () => {
     try {
@@ -99,10 +100,25 @@ export default function BlogList() {
       console.error("Logout error:", err);
     }
   };
+  const fetchCurrentUser = async () => {
+      try {
+        const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/currentuser", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setUser(data.currentuserid);
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      } 
 
   useEffect(() => {
     fetchAllBlogs();
     fetchUnreadCount();
+    fetchCurrentUser();
 
     const interval = setInterval(() => {
       fetchAllBlogs();
@@ -163,7 +179,9 @@ export default function BlogList() {
                   alt="User"
                   className="w-10 h-10 rounded-full cursor-pointer hover:underline"
                   onClick={() => {
-                    navigate(`/userprofile/${blog.user._id}`);
+                        user._id === User ? navigate('/profile') : navigate(`/userprofile/${blog.user._id}`);
+                    
+                    
                   }}
                 />
                 <div>
@@ -220,4 +238,5 @@ export default function BlogList() {
       </div>
     </div>
   );
+}
 }
