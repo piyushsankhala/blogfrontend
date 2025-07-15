@@ -61,7 +61,7 @@ export default function EditBlog() {
             />
             {image && (
               <img
-                src={URL.createObjectURL(image)}
+                src={blog.image}
                 alt="Preview"
                 className="mt-2 rounded max-h-48 mx-auto"
               />
