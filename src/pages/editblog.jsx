@@ -6,7 +6,7 @@ export default function EditBlog() {
   const { id: blogid } = useParams();
   const navigate = useNavigate();
 
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
 
@@ -46,9 +46,10 @@ export default function EditBlog() {
               🖼 Image URL
             </label>
             <input
-              type="text"
+              type="file"
+              accept="image/*"
               value={image}
-              onChange={(e) => setImage(e.target.value)}
+              onChange={(e) => setImage(e.target.files[0])}
               className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter image URL or leave blank"
             />
