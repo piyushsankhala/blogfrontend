@@ -6,6 +6,7 @@ export default function Profile() {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
+  const [menuOpenId, setMenuOpenId] = useState(null);
   const navigate = useNavigate();
 
   const getBlogsOfExistingUser = async () => {
@@ -75,6 +76,32 @@ export default function Profile() {
     }
   };
 
+  const handleDelete = async (blogid) => {
+    const confirmed = window.confirm("Are you sure you want to delete this blog?");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/blog/deletepost",
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ blogid }),
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        setBlogs((prev) => prev.filter((b) => b._id !== blogid));
+      } else {
+        console.error("Delete error:", data.message);
+      }
+    } catch (error) {
+      console.error("Delete fetch error:", error);
+    }
+  };
+
   useEffect(() => {
     getBlogsOfExistingUser();
     fetchUnreadCount();
@@ -141,12 +168,14 @@ export default function Profile() {
       {/* 📝 Blog Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {blogs.length === 0 ? (
-          <p className="col-span-full text-center text-gray-500 text-lg">No blogs found.</p>
+          <p className="col-span-full text-center text-gray-500 text-lg">
+            No blogs found.
+          </p>
         ) : (
           blogs.map((blog) => (
             <div
               key={blog._id}
-              className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition"
+              className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition relative"
             >
               {/* Blog Image */}
               {blog.image ? (
@@ -158,6 +187,34 @@ export default function Profile() {
               ) : (
                 <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
                   No Image
+                </div>
+              )}
+
+              {/* Action Menu Button */}
+              <button
+                onClick={() =>
+                  setMenuOpenId((prev) => (prev === blog._id ? null : blog._id))
+                }
+                className="absolute top-2 right-2 text-gray-600 hover:text-black z-10"
+              >
+                ⋮
+              </button>
+
+              {/* Popup Menu */}
+              {menuOpenId === blog._id && (
+                <div className="absolute right-2 top-10 bg-white border rounded shadow z-20">
+                  <button
+                    onClick={() => navigate(`/editblog/${blog._id}`)}
+                    className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(blog._id)}
+                    className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left text-red-600"
+                  >
+                    🗑 Delete
+                  </button>
                 </div>
               )}
 
