@@ -13,20 +13,28 @@ export default function EditBlog() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("blogid", blogid);
+      formData.append("content", content);
+      if (image) {
+        formData.append("image", image);
+      }
+
       const res = await fetchWithRefresh(
         "https://blogbackend-3-l6mp.onrender.com/api/blog/editpost",
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ blogid, content, image }),
+          body: formData,
         }
       );
+
       const data = await res.json();
       if (res.ok) {
         navigate("/profile");
       } else {
-        setError(data.message || "Update failed");
+        setError(data.message);
+        console.error(data.err)
       }
     } catch (err) {
       setError("Error updating blog");
@@ -40,22 +48,20 @@ export default function EditBlog() {
 
         {error && <p className="text-red-600">{error}</p>}
 
-        <form onSubmit={handleUpdate} className="space-y-4">
+        <form onSubmit={handleUpdate} className="space-y-4" encType="multipart/form-data">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              🖼 Image URL
+              🖼 Upload New Image (optional)
             </label>
             <input
               type="file"
               accept="image/*"
-              
               onChange={(e) => setImage(e.target.files[0])}
               className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter image URL or leave blank"
             />
             {image && (
               <img
-                src={image}
+                src={URL.createObjectURL(image)}
                 alt="Preview"
                 className="mt-2 rounded max-h-48 mx-auto"
               />
@@ -64,14 +70,15 @@ export default function EditBlog() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              📝 Content
+              📝 Blog Content
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows="6"
               className="w-full border border-gray-300 rounded px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Write your updated content..."
+              placeholder="Write your updated blog content..."
+              required
             />
           </div>
 
