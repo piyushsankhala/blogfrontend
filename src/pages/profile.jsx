@@ -175,7 +175,7 @@ export default function Profile() {
           blogs.map((blog) => (
             <div
               key={blog._id}
-              className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition relative"
+              className="bg-white rounded-lg shadow border border-gray-200 relative overflow-visible flex flex-col cursor-pointer hover:shadow-md transition"
             >
               {/* Blog Image */}
               {blog.image ? (
@@ -190,28 +190,34 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* Action Menu Button */}
+              {/* ⋮ Button */}
               <button
                 onClick={() =>
                   setMenuOpenId((prev) => (prev === blog._id ? null : blog._id))
                 }
-                className="absolute top-2 right-2 text-gray-600 hover:text-black z-10"
+                className="absolute top-2 right-2 bg-white text-gray-700 hover:text-black hover:bg-gray-100 p-1.5 rounded-full z-50 shadow-sm"
               >
-                ⋮
+                <span className="text-xl leading-none">⋮</span>
               </button>
 
-              {/* Popup Menu */}
+              {/* Dropdown Menu */}
               {menuOpenId === blog._id && (
-                <div className="absolute right-2 top-10 bg-white border rounded shadow z-20">
+                <div className="absolute top-12 right-2 w-40 bg-white border border-gray-200 rounded-lg shadow-xl z-50 transition-all duration-200 ease-out">
                   <button
-                    onClick={() => navigate(`/editblog/${blog._id}`)}
-                    className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
+                    onClick={() => {
+                      navigate(`/editblog/${blog._id}`);
+                      setMenuOpenId(null);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black transition"
                   >
                     ✏️ Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(blog._id)}
-                    className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left text-red-600"
+                    onClick={() => {
+                      handleDelete(blog._id);
+                      setMenuOpenId(null);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 transition"
                   >
                     🗑 Delete
                   </button>
