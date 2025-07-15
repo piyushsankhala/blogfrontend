@@ -11,6 +11,7 @@ import Otp from "./pages/otp.jsx";
 import UserProfile from "./pages/userprofile.jsx";
 import UserChatList from "./pages/userchatlist.jsx";
 import Chatroom from "./pages/chatroom.jsx";
+import EditBlog from "./pages/editblog.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -76,6 +77,10 @@ export default function App() {
        <Route
         path="/chatroom/:id"
         element={user ? <Chatroom/>: <Navigate to="/login" replace />}
+      />
+      <Route
+        path="/editblog/:id"
+        element={user ? <EditBlog/>: <Navigate to="/login" replace />}
       />
     </Routes>
   );
