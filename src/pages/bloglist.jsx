@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fetchWithRefresh } from "../utils/fetchwithrefresh";
 import { useNavigate } from "react-router-dom";
 
@@ -8,9 +8,9 @@ export default function BlogList() {
   const [User, setUser] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const navigate = useNavigate();
   const [allUsers, setAllUsers] = useState([]);
-
+  const navigate = useNavigate();
+  const searchBoxRef = useRef();
 
   const fetchAllBlogs = async () => {
     try {
@@ -124,6 +124,35 @@ export default function BlogList() {
     }
   };
 
+  const fetchAllUsers = async () => {
+    try {
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/user/allusers",
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        setAllUsers(data.users || []);
+      } else {
+        console.error("User fetch error:", data.message);
+      }
+    } catch (err) {
+      console.error("Failed to fetch all users:", err);
+    }
+  };
+
+  const getsearchusers = () => {
+    const searchusers = allUsers.filter((user) =>
+      user.username.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredUsers(searchusers);
+  };
+
   useEffect(() => {
     fetchAllBlogs();
     fetchUnreadCount();
@@ -136,41 +165,29 @@ export default function BlogList() {
 
     return () => clearInterval(interval);
   }, []);
-  const fetchAllUsers = async () => {
-  try {
-    const res = await fetchWithRefresh(
-      "https://blogbackend-3-l6mp.onrender.com/api/user/allusers",
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+
+  useEffect(() => getsearchusers(), [searchQuery]);
+
+  useEffect(() => {
+    fetchAllUsers();
+    const interval = setInterval(fetchAllUsers, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Close search dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        searchBoxRef.current &&
+        !searchBoxRef.current.contains(e.target)
+      ) {
+        setFilteredUsers([]);
       }
-    );
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    const data = await res.json();
-    if (res.ok) {
-      setAllUsers(data.users || []);
-    } else {
-      console.error("User fetch error:", data.message);
-    }
-  } catch (err) {
-    console.error("Failed to fetch all users:", err);
-  }
-};
-const getsearchusers = ()=>{
-  const searchusers = allUsers.filter(user => user.username.toLowerCase().includes(searchQuery.toLowerCase()))
-  setFilteredUsers(searchusers)
-}
-useEffect(()=>getsearchusers()
-, [searchQuery]);
-useEffect(()=>{
-  fetchAllUsers()
-const interval = setInterval(fetchAllUsers , 15000)
-return () => clearInterval(interval);
-}, []);
-
-
-    
   return (
     <div className="min-h-screen bg-gray-100 py-6 px-4">
       {/* Header */}
@@ -178,7 +195,7 @@ return () => clearInterval(interval);
         <h1 className="text-3xl font-bold text-gray-800">📸 InstaBlog</h1>
 
         {/* Search Input */}
-        <div className="relative w-full sm:w-64">
+        <div className="relative w-full sm:w-64" ref={searchBoxRef}>
           <input
             type="text"
             placeholder="Search user..."
@@ -186,7 +203,7 @@ return () => clearInterval(interval);
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {filteredUsers.length > 0 && (
+          {searchQuery && filteredUsers.length > 0 && (
             <ul className="absolute z-10 top-full left-0 right-0 bg-white shadow-md border rounded-lg mt-1 max-h-48 overflow-y-auto">
               {filteredUsers.map((user) => (
                 <li
@@ -200,9 +217,14 @@ return () => clearInterval(interval);
                     setSearchQuery("");
                     setFilteredUsers([]);
                   }}
-                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
                 >
-                  {user.username}
+                  <img
+                    src={`https://api.dicebear.com/8.x/initials/svg?seed=${user.username}`}
+                    alt="User Avatar"
+                    className="w-6 h-6 rounded-full"
+                  />
+                  <span>{user.username}</span>
                 </li>
               ))}
             </ul>
