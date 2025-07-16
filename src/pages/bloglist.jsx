@@ -5,8 +5,12 @@ import { useNavigate } from "react-router-dom";
 export default function BlogList() {
   const [bloglist, setBloglist] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [User, setUser] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const navigate = useNavigate();
-  const[User,setUser] = useState("")
+  const [allUsers, setAllUsers] = useState([]);
+
 
   const fetchAllBlogs = async () => {
     try {
@@ -100,21 +104,25 @@ export default function BlogList() {
       console.error("Logout error:", err);
     }
   };
+
   const fetchCurrentUser = async () => {
-      try {
-        const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/currentuser", {
+    try {
+      const res = await fetchWithRefresh(
+        "https://blogbackend-3-l6mp.onrender.com/api/user/currentuser",
+        {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setUser(data.currentuserid);
         }
-      } catch (err) {
-        console.error("Auth check failed:", err);
-      } 
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.currentuserid);
+      }
+    } catch (err) {
+      console.error("Auth check failed:", err);
     }
+  };
 
   useEffect(() => {
     fetchAllBlogs();
@@ -128,12 +136,80 @@ export default function BlogList() {
 
     return () => clearInterval(interval);
   }, []);
+  const fetchAllUsers = async () => {
+  try {
+    const res = await fetchWithRefresh(
+      "https://blogbackend-3-l6mp.onrender.com/api/user/allusers",
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      }
+    );
 
+    const data = await res.json();
+    if (res.ok) {
+      setAllUsers(data.users || []);
+    } else {
+      console.error("User fetch error:", data.message);
+    }
+  } catch (err) {
+    console.error("Failed to fetch all users:", err);
+  }
+};
+const getsearchusers = ()=>{
+  const searchusers = allUsers.filter(user => user.username.toLowerCase().includes(searchQuery.toLowerCase()))
+  setFilteredUsers(searchusers)
+}
+useEffect(()=>getsearchusers()
+, [searchQuery]);
+useEffect(()=>{
+  fetchAllUsers()
+const interval = setInterval(fetchAllUsers , 15000)
+return () => clearInterval(interval);
+}, []);
+
+
+    
   return (
     <div className="min-h-screen bg-gray-100 py-6 px-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 max-w-3xl mx-auto gap-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 max-w-3xl mx-auto gap-2 relative">
         <h1 className="text-3xl font-bold text-gray-800">📸 InstaBlog</h1>
+
+        {/* Search Input */}
+        <div className="relative w-full sm:w-64">
+          <input
+            type="text"
+            placeholder="Search user..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {filteredUsers.length > 0 && (
+            <ul className="absolute z-10 top-full left-0 right-0 bg-white shadow-md border rounded-lg mt-1 max-h-48 overflow-y-auto">
+              {filteredUsers.map((user) => (
+                <li
+                  key={user._id}
+                  onClick={() => {
+                    navigate(
+                      user._id === User
+                        ? "/profile"
+                        : `/userprofile/${user._id}`
+                    );
+                    setSearchQuery("");
+                    setFilteredUsers([]);
+                  }}
+                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                >
+                  {user.username}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Buttons */}
         <div className="flex gap-2 items-center">
           <button
             onClick={() => navigate("/userchatlist")}
@@ -179,17 +255,19 @@ export default function BlogList() {
                   src={`https://api.dicebear.com/8.x/initials/svg?seed=${blog.user?.username || "U"}`}
                   alt="User"
                   className="w-10 h-10 rounded-full cursor-pointer hover:underline"
-                  onClick={() => {
-                       blog.user._id === User ? navigate('/profile') : navigate(`/userprofile/${blog.user._id}`);
-                    
-                    
-                  }}
+                  onClick={() =>
+                    blog.user._id === User
+                      ? navigate("/profile")
+                      : navigate(`/userprofile/${blog.user._id}`)
+                  }
                 />
                 <div>
                   <h3
-                    onClick={() => {
-                      blog.user._id === User ? navigate('/profile') : navigate(`/userprofile/${blog.user._id}`)
-                    }}
+                    onClick={() =>
+                      blog.user._id === User
+                        ? navigate("/profile")
+                        : navigate(`/userprofile/${blog.user._id}`)
+                    }
                     className="cursor-pointer hover:underline font-semibold text-sm text-gray-900"
                   >
                     {blog.user?.username || "Unknown"}
@@ -240,4 +318,3 @@ export default function BlogList() {
     </div>
   );
 }
-
