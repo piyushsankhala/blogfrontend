@@ -8,11 +8,11 @@ export default function Profile() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [menuOpenId, setMenuOpenId] = useState(null);
   const navigate = useNavigate();
-  const getuser = async()=>{
-      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/getuser",{
-        method:"POST",
+  const getcurrentuser = async()=>{
+      const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/currentuser",{
+        method:"GET",
         headers:{"Content-Type" : "application/json"},
-        body :JSON.stringify({userid}),
+        
       })
     
       const data = await res.json()
@@ -23,7 +23,7 @@ export default function Profile() {
         alert("User not found")
       }
     }
-    useEffect(()=>{getuser()},[])
+    useEffect(()=>{getcurrentuser()},[])
   const getBlogsOfExistingUser = async () => {
     try {
       const res = await fetchWithRefresh(
