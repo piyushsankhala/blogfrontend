@@ -7,6 +7,21 @@ export default function UserProfile() {
   const [username, setUsername] = useState("");
   const [blogs, setBlogs] = useState([]);
   const navigate = useNavigate();
+  const getuser = async()=>{
+    const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/getuser",{
+      method:"GET",
+      headers:{"Content-Type" : "application/json"},
+      body :JSON.stringify({userid}),
+    })
+    const data = await res.json()
+    if(res.ok){
+      setUsername(data.user.username)
+    }
+    else{
+      alert("User not found")
+    }
+  }
+  useEffect(()=>{getuser()},[])
 
   const getBlogOfUser = async () => {
     try {
@@ -26,9 +41,7 @@ export default function UserProfile() {
 
       if (res.ok) {
         setBlogs(data.blogs);
-        if (data.blogs.length > 0) {
-          setUsername(data.blogs[0].user.username);
-        }
+       
       } else {
         console.error("Error fetching user blogs:", data.message);
       }
