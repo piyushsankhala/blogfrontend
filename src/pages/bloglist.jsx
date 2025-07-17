@@ -9,8 +9,10 @@ export default function BlogList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-  const navigate = useNavigate();
+  const [likedUsers, setLikedUsers] = useState([]);
+  const [likesid, setLikesid] = useState(null)
   const searchBoxRef = useRef();
+  const navigate = useNavigate();
 
   const fetchAllBlogs = async () => {
     try {
@@ -153,6 +155,8 @@ export default function BlogList() {
     setFilteredUsers(searchusers);
   };
 
+  
+
   useEffect(() => {
     fetchAllBlogs();
     fetchUnreadCount();
@@ -174,13 +178,9 @@ export default function BlogList() {
     return () => clearInterval(interval);
   }, []);
 
-  // Close search dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        searchBoxRef.current &&
-        !searchBoxRef.current.contains(e.target)
-      ) {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
         setFilteredUsers([]);
       }
     };
@@ -321,11 +321,54 @@ export default function BlogList() {
                   >
                     ❤️
                   </button>
-                  <span className="text-sm text-gray-700">
+                  <span
+                    className="text-sm text-gray-700 cursor-pointer hover:underline"
+                    onClick={()=>setLikesid((prev)=>(prev ===blog._id?null:blog._id))}
+                  >
                     {blog.likes?.length || 0} like
                     {blog.likes?.length !== 1 ? "s" : ""}
                   </span>
                 </div>
+                {likesid===blog._id && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white w-80 max-h-[80vh] rounded-xl shadow-lg p-4 overflow-y-auto">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-semibold text-gray-800">Liked by</h2>
+              <button
+                onClick={()=>{setLikesid(null)}}
+                className="text-gray-500 hover:text-red-500 text-xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            {blog.likes.length === 0 ? (
+              <p className="text-sm text-gray-500">No likes yet.</p>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {blog.likes.map((user) => (
+                  <li
+                    key={user._id}
+                    className="flex items-center gap-3 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md"
+                    onClick={() => {
+                      setLikesid(null)
+                      navigate(
+                        user._id === User ? "/profile" : `/userprofile/${user._id}`
+                      );
+                    }}
+                  >
+                    <img
+                      src={`https://api.dicebear.com/8.x/initials/svg?seed=${user.username}`}
+                      alt="Avatar"
+                      className="w-6 h-6 rounded-full"
+                    />
+                    <span className="text-sm text-gray-800">{user.username}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
 
                 <p className="text-sm text-gray-800 leading-relaxed">
                   {blog.content?.length > 250
@@ -337,6 +380,9 @@ export default function BlogList() {
           ))
         )}
       </div>
+
+      {/* Likes Modal */}
+      
     </div>
   );
 }
