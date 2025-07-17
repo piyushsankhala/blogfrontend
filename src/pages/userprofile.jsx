@@ -13,7 +13,7 @@ export default function UserProfile() {
       headers:{"Content-Type" : "application/json"},
       body :JSON.stringify({userid}),
     })
-  }
+  
     const data = await res.json()
     if(res.ok){
       setUsername(data.user.username)
