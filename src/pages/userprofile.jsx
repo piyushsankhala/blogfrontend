@@ -9,7 +9,7 @@ export default function UserProfile() {
   const navigate = useNavigate();
   const getuser = async()=>{
     const res = await fetchWithRefresh("https://blogbackend-3-l6mp.onrender.com/api/user/getuser",{
-      method:"GET",
+      method:"POST",
       headers:{"Content-Type" : "application/json"},
       body :JSON.stringify({userid}),
     })
